@@ -17,7 +17,7 @@ class SimEvent(threading.Thread):
       #start = time.time()
       #do something here
       rnd=random.randint(0,99)
-      if rnd<10:
+      if rnd<6:
         event = Event.E_Init().Gen_Event()
 #      elif rnd <35:
 #        event = Event.E_RescueVM().Gen_Event()
