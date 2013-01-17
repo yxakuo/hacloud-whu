@@ -15,6 +15,9 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.DEBUG)
 
+#global scheduler
+#scheduler = whu_sched.scheduler(time.time,time.sleep)
+
 class Handler(Error):
     pass
 
@@ -22,18 +25,32 @@ class H_Init(Handler):
     
     def handle(self):
 	global logger
-	logger.info(time.time())
+#	global scheduler
         scheduler = whu_sched.scheduler(time.time,time.sleep)
-	print 'scheduler initialized\n'
+	msg = 'scheduler initialized'
+	logger.debug(msg)
+	print msg
         E = Event.E_LoopPerceive()
         event = E.Gen_Event()
         scheduler.enter(*event)
-	print 'Initial event added\n'
+	msg = 'Initial event %s added'
+	logger.debug(msg,event[4])
+	print msg %event[4]
+	
+	E = Event.E_Test()
+	event = E.Gen_Event()
+	scheduler.enter(*event)
+	
+	msg = '\n\n\n\n\n\n\nTest event id is %s \n\n\n\n\n\n\n\n\n\n'
+	logger.debug(msg,event[4])
+	print msg %event[4]
+ 
+	#time.sleep(3)
 
 class H_LoopPerceive(Handler):
     def handle(self):
 	global logger
-	logger.info(time.time())
+	#global scheduler
 	scheduler = whu_sched.scheduler(time.time,time.sleep)
 	#Enter PerceiveVM event
         E = Event.E_PerceiveVM()
@@ -51,72 +68,94 @@ class H_LoopPerceive(Handler):
 	E = Event.E_LoopPerceive()
 	event = E.Gen_Event()
 	scheduler.enter(*event)
-	print 'size of queue is ',len(scheduler._queue)
-	print 'LoopPerceive handled\n'
+	msg = "size of queue is %s"
+	logger.debug(msg,len(scheduler._queue))
+	print msg %len(scheduler._queue)
+	msg = 'LoopPerceive handled'
+	logger.debug(msg)
+	#print msg
+#	i =0
+#	while i<len(scheduler._queue):	
+#	  print scheduler._queue[i]
+#	  i +=1
+#	time.sleep(5)
 
 class H_PerceiveVM(Handler):
     
     def handle(self):
 	global logger
-	logger.info(time.time())
-	print 'F_VMStatus called\n'
-	print 'F_GetVMStatus called\n'
+#	print 'F_VMStatus called\n'
+#	print 'F_GetVMStatus called\n'
 	rnd = random.randint(0,99)
+	#global scheduler
 	scheduler = whu_sched.scheduler(time.time,time.sleep)
 	if rnd >40 and rnd < 50:
-	  print 'VM status anomaly detected\n'
+	  msg = "VM %s status anomaly detected"
 	  vmname = random.choice(['instance-00000001','instance-00000002','instance-00000003','instance-00000004',])
-	  print 'anomaly occurred in ',vmname,'\n'
+	  logger.warn(msg,vmname)
+	  print msg %vmname
 	  args=[]
 	  args.append(vmname)
 	  #print 'args for E_RescueVM is ',args
           E = Event.E_RescueVM(args)
           event = E.Gen_Event()
           scheduler.enter(*event)
-	  print 'RescueVM event added\n'
+	  msg = 'RescueVM event %s added'
+	  logger.debug(msg,event[4])
+	  print msg %event[4]
 	else:
-	  print 'VM status is Ok\n'
-	  print 'size of queue is ',len(scheduler._queue)
-	print 'H_PerceiveVM handled\n'
+	  msg = "VM status is Ok,size of queue is %s"
+	  logger.debug(msg,len(scheduler._queue))
+	  print msg %len(scheduler._queue)
+	msg = 'H_PerceiveVM handled'
+	logger.debug(msg)
+	print msg
         #VM = F_VMStatus
         #VM.F_GetVMStatus()
 
 class H_PerceiveHost(Handler):
   def handle(self,host_id = 'host-0000'):
     global logger
-    logger.info(time.time())
-    print 'F_HostStatus called\n'
-    print 'F_GetHostStatus called\n'
+#    print 'F_HostStatus called\n'
+#    print 'F_GetHostStatus called\n'
     rnd = random.randint(0,99)
+    #global scheduler
     scheduler = whu_sched.scheduler(time.time,time.sleep)
     if rnd >40 and rnd < 45:
-      print 'Host status anomaly detected\n'
+      msg = "Host %s status anomaly detected"
       hostname = random.choice(['host-0001','host-0002','host-0003','host-0004',])
-      print 'anomaly occurred in ',hostname,'\n'
+      logger.warn(msg,hostname)
+      print msg %hostname
       args=[]
       args.append(hostname)
       #print 'args for E_RescueVM is ',args
       E = Event.E_RescueHost(args)
       event = E.Gen_Event()
       scheduler.enter(*event)
-      print 'RescueHost event added\n'
+      msg = 'RescueHost event %s added'
+      logger.debug(msg,event[4])
+      print msg %event[4]
     else:
-      print 'Host status is Ok\n'
-      print 'size of queue is ',len(scheduler._queue)
-    print 'H_PerceiveHost handled\n'
+      msg = 'Host status is Ok ,size of queue is %s'
+      logger.debug(msg,len(scheduler._queue))
+      print msg %len(scheduler._queue)
+    msg = 'H_PerceiveHost handled'
+    logger.debug(msg)
+    print msg
 
 class H_PerceiveVNet(Handler):
   def handle(self):
     global logger
-    logger.info(time.time())
-    print 'PerceiveVNet handled\n'
+    msg = "PerceiveVNet handled"
+    logger.debug(msg)
+    print msg
+
 class H_RescueVM(Handler):
     def handle(self,instance_id = 'instance-00000000'):
 	global logger
-	logger.info(time.time())
-	print 'F_instance called\n'
-	print instance_id,' is rescued\n'
-	print 'H_RescueVM handled\n'
+	msg = "H_RescueVM handled with %s"
+	logger.debug(msg,instance_id)
+	print msg %instance_id
         #instance = F_Instance()
         #instance_name = instance.Get_SpecificInstanceName(instance_id)
         #image_id = instance.Get_InstanceImageId(instance_id)
@@ -132,11 +171,21 @@ class H_RescueVM(Handler):
 class H_RescueHost(Handler):
   def handle(self,host_id = 'host-0000'):
     global logger
-    logger.info(time.time())
-    print 'H_RescueHost handled\n'
+    msg = 'H_RescueHost handled with %s'
+    logger.debug(msg,host_id)
+    print msg %host_id
 
 class H_RescueVNet(Handler):
   def handle(self):
     global logger
-    logger.info(time.time())
-    print 'H_RescueVNet handled\n'
+    msg = 'H_RescueVNet handled'
+    logger.debug(msg)
+    print msg
+    
+
+#for test
+class H_Test(Handler):
+  def handle(self):
+    msg = 'Hello test ',Event.E_Test.idx
+    logger.debug(msg)
+    print msg

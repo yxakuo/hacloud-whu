@@ -31,10 +31,20 @@ has another way to reference private data (besides global variables).
 import heapq
 from collections import namedtuple
 from Lock import Wakeup_Lock
-
+import Event
+import Handle
+import time
 __all__ = ["scheduler"]
 
-Event = namedtuple('Event', 'time, priority, handle, argument, uid')
+import logging
+logger = logging.getLogger('whu_sched')
+hdlr = logging.FileHandler('/var/tmp/whu_sched.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.DEBUG)
+
+Event = namedtuple('Event', 'time, priority, handle, argument, uid, description')
 
 class scheduler:
     _queue = []
@@ -46,27 +56,27 @@ class scheduler:
         self.timefunc = timefunc
         self.delayfunc = delayfunc
 
-    def enterabs(self, time, priority, action, argument, uid):
+    def enterabs(self, time, priority, action, argument, uid,description):
         """Enter a new event in the queue at an absolute time.
 
         Returns an ID for the event which can be used to remove it,
         if necessary.
 
         """
-        event = Event(time, priority, action, argument, uid)
-        heapq.heappush(self._queue, event)
+        event = Event(time, priority, action, argument, uid,description)
+        heapq.heappush(scheduler._queue, event)
         return event # The ID
 
-    def enter(self, delay, priority, action, argument, uid):
+    def enter(self, delay, priority, action, argument, uid,description):
         """A variant that specifies the time as a relative time.
 
         This is actually the more commonly used interface.
 
         """
         time = self.timefunc() + delay
-        return self.enterabs(time, priority, action, argument, uid)
+        return self.enterabs(time, priority, action, argument, uid,description)
 
-    def cancel(self, event):
+    def cancel(self, event_id):
         """Remove an event from the queue.
 
         This must be presented the ID as returned by enter().
@@ -74,17 +84,31 @@ class scheduler:
 
         """
         i=0
-        while i <= len(self._queue):
-            if self._queue[i][1]==event[1]:
-                if self._queue[i][2]==event[2]:
-                    if self._queue[i][3]==event[3]:
-                        self._queue.remove(self._queue[i])
-            i = i+1
-        heapq.heapify(self._queue)
+	deleted = False
+	print 'event %s', event_id,' to be canceled\n'
+        while i < len(scheduler._queue):
+	  print i,'th event in queue is',scheduler._queue[i][4]
+	  if scheduler._queue[i][4]==int(event_id):
+	    print 'event ',event_id,' is queuing\n'
+	    time.sleep(3)
+            scheduler._queue.remove(scheduler._queue[i]) 
+	    deleted = True
+            break
+          i = i+1
+	if deleted:
+	  i = 0
+          while i < len(scheduler._queue):
+	    print i,'th event in queue is',scheduler._queue[i][4]
+	    i +=1
+          heapq.heapify(scheduler._queue)
+	else:
+	  msg = 'fail to cancel event %s'
+	  #logger.error(msg,event_id)
+	  print msg %event_id
 
     def empty(self):
         """Check whether the queue is empty."""
-        return not self._queue
+        return not scheduler._queue
 
     def run(self):
         """Execute events until the queue is empty.
@@ -109,7 +133,7 @@ class scheduler:
         """
         # localize variable access to minimize overhead
         # and to improve thread safety
-        q = self._queue
+        q = scheduler._queue
         delayfunc = self.delayfunc
         timefunc = self.timefunc
         pop = heapq.heappop
@@ -117,28 +141,77 @@ class scheduler:
             print 'empty'
         
         while q:
-            if self.empty():
-                self.enter(1,1,print_empty,())
-            time, priority, action, argument,id = checked_event = q[0]
+	    i = 0
+            while i < len(q):
+	      print i,'th event in queue is',q[i][4]
+	      i +=1
+            if len(q)==0:
+		print 'Empty queue\n'
+                self.enter(1,10,print_empty,(),99999,'kkk')
+	    checked_event = q[0]
+            time, priority, action, argument,uid,description = checked_event
             now = timefunc()
-            if now < time:
-                count = time - now
-                while count > 0:
-                    if Wakeup_Lock().IsLocked():
-                        count = count - 1
-                        delayfunc(1)
-                    else:
-                        Wakeup_Lock().CloseLock()
-                        break
+	    if time > now:
+	      Wakeup_Lock().CloseLock()
+            while time > now and Wakeup_Lock().IsLocked():
+	      now = timefunc()
+              delayfunc(1)
+	      print 'event %s handle %s description %s Sleeping\n' %(uid,action,description)
             else:
+		if Wakeup_Lock().IsLocked():
+		  Wakeup_Lock().OpenLock()
                 event = pop(q)
                 # Verify that the event was not removed or altered
                 # by another thread after we last looked at q[0].
-                if event is checked_event:
-                    action(*argument)
-                    delayfunc(0)   # Let other threads run
+                if event is not checked_event and event[5] == 'URG':
+		  msg = 'Urgent event %s  arrived'
+		  logger.debug(msg,event[4])
+		  logger.info("event %s %s called with args: %s",event[4],event[2],event[3])
+                  event[2](*event[3])
+                  delayfunc(0)   # Let other threads run
+		elif event is checked_event:
+		  logger.info("event %s %s called with args: %s",uid,action,argument)
+                  action(*argument)
+                  delayfunc(0)   # Let other threads run
                 else:
-                    heapq.heappush(q, event)
+                  heapq.heappush(q, event)
+	print 'Empty Queue'
+
+    def reset(self):
+      event =Event(1,0,Handle.H_Init().handle,(),0,'NEWINIT')
+      scheduler._queue = [event]
+      print 'Queue reset\n'
+      #E_Base._Event_Uid = 0
+
+    def urgent(self,event_id):
+      msg = "Try to elevate event %s to urgent"
+      i = 0
+      while i<len(scheduler._queue): 
+        if scheduler._queue[i][4] == int(event_id):
+          break;
+	else:
+	  i += 1
+      if i == len(scheduler._queue):
+	err = 'Can not find event %s'
+        #logger.error(err,event_id)
+	print err %event_id
+	return False 
+      else:  
+        (tmp,tmp,handle,argument,uid,tmp) = scheduler._queue[i]
+        scheduler._queue.remove(scheduler._queue[i]) 
+	event = Event(0,0,handle,argument,uid,'URG')
+	heapq.heappush(scheduler._queue,event)
+	if Wakeup_Lock().IsLocked():
+	  Wakeup_Lock().OpenLock()
+	print 'after urgent insert\n'
+	i = 0
+        while i < len(scheduler._queue):
+	  print i,'th event in queue is',scheduler._queue[i][4]
+	  i +=1
+	time.sleep(5)
+        logger.debug(msg,event_id)
+        print msg %event_id
+	return True
 
     @property
     def queue(self):
@@ -151,7 +224,7 @@ class scheduler:
         # Use heapq to sort the queue rather than using 'sorted(self._queue)'.
         # With heapq, two events scheduled at the same time will show in
         # the actual order they would be retrieved.
-        events = self._queue[:]
+        events = scheduler._queue[:]
         return map(heapq.heappop, [events]*len(events))
     
     def wakeup(self,event):
