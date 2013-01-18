@@ -1,15 +1,11 @@
 import whu_sched
 import time
 import Event
-scheduler = whu_sched.scheduler(time.time,time.sleep)
-
-#event = Event.E_Init().Gen_Event()
-#scheduler.enter(*event)
-#scheduler.run()
-
 import sys
 import threading
 import random
+
+scheduler = whu_sched.scheduler(time.time,time.sleep)
 
 class SimEvent(threading.Thread):
   def __init__(self):
@@ -25,7 +21,7 @@ class SimEvent(threading.Thread):
 #      else :
 #        event = Event.E_PerceiveVM().Gen_Event()
       event = Event.E_Init().Gen_Event()
-      #global scheduler
+
       scheduler.enter(*event)
       while True:
         scheduler.run()
@@ -37,7 +33,7 @@ class SimEvent(threading.Thread):
 if __name__=="__main__":
   maxThread = 1
   threadList = []
-#  global scheduler
+
 #  for i in range(maxThread):
   threads = SimEvent()
   threadList.append(threads)
@@ -50,34 +46,29 @@ if __name__=="__main__":
   while True:
     cmd = []
     sys.stdin.flush()
-    cmd = raw_input('input_command:').split()
+    cmd = raw_input('input_command:\n').split()
   #  print cmd
     if cmd:
       time.sleep(3)
-    if cmd[0] == 'reset':
+    if cmd[0] == 'r' or cmd[0]=='reset':
       if not scheduler.empty(): 
         print 'before reset ,size of queue is ',len(scheduler._queue)
         scheduler.reset()
-#        print 'scheduler reset\n'
-#        print 'size of queue is ',len(scheduler._queue)
       else:
         print 'scheduler already empty\n'
-#      print 'New Init event added\n'
-#      event = Event.E_Init().Gen_Event()
-#      scheduler.enter(*event)
 
-    elif cmd[0] == 'cancel':
-      scheduler.cancel(cmd[1])
-#      print 'event ',cmd[1],' canceled\n'
+    elif cmd[0] == 'c' or cmd[0] =='cancel':
+      if not scheduler.cancel(cmd[1]):
+	print 'fail to cancel event %s\n',cmd[1]
       time.sleep(3)
 
-    elif cmd[0] == 'urgent':
-      result = scheduler.urgent(cmd[1])
-      if result :
+    elif cmd[0] == 'u' or cmd[0] == 'urgent':
+      if scheduler.urgent(cmd[1]):
         print 'event ',cmd[1],'is elevated to urgent.\n'
       else:
         print 'failed to elevated event ',cmd[1],' to urgent.\n'
-    elif cmd[0] == 'print':
+
+    elif cmd[0] == 'p' or cmd[0] == 'print':
 	print 'Previous queue status:\n'
 	i = 0
 	while i < len(scheduler._queue):
@@ -87,12 +78,14 @@ if __name__=="__main__":
       print 'Add a test event to queue\n'
       event = Event.E_Test().Gen_Event()
       scheduler.enter(*event)
-    elif cmd[0] == 'quit':
+    elif cmd[0] == 'q' or cmd[0] == 'quit':
       print 'Quiting......\n'
       scheduler.reset()
       for i in threadList:
         i._Thread__stop()
       break
+    elif cmd[0]:
+      print 'Unkown command\n'
 
   for i in threadList:
     i.join()
