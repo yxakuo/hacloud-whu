@@ -83,3 +83,10 @@ class E_Test(E_Base):
     self.handle = Handle.H_Test().handle
     self.args = args
     E_Test.idx +=1
+
+class E_Worker(E_Base):
+
+  def __init__(self,args=[],time=random.randint(2,20),priority=5,description='TST'):
+    E_Base.__init__(self,time,priority,description)
+    self.handle = Handle.H_Worker().handle
+    self.args = args

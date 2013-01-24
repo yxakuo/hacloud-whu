@@ -2,21 +2,13 @@ import whu_sched
 import time
 import Event
 import random
-#import logging
 from Log import logger 
-
+from OfflineAntiVirus import OfflineAntiVirusThread
 #from Execution.Volume import F_Volume
 #from Perceive.VM import F_VMStatus
 from Execution.error import Error
 #from Execution.Instance import F_Instance
-
-#logger initialization
-#logger = logging.getLogger('whu_sched')
-#hdlr = logging.FileHandler('/var/tmp/whu_sched.log')
-#formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-#hdlr.setFormatter(formatter)
-#logger.addHandler(hdlr)
-#logger.setLevel(logging.DEBUG)
+import sys
 
 class Handler(Error):
   pass
@@ -36,13 +28,13 @@ class H_Init(Handler):
     logger.debug(msg,event[4])
     #print msg %event[4]
 #for test    
-    E = Event.E_Test()
-    event = E.Gen_Event()
-    scheduler.enter(*event)
-    
-    msg = '!********Test event id is %s********!'
-    logger.debug(msg,event[4])
-    print msg %event[4]
+#    E = Event.E_Test()
+#    event = E.Gen_Event()
+#    scheduler.enter(*event)
+#    
+#    msg = '!********Test event id is %s********!'
+#    logger.debug(msg,event[4])
+#    print msg %event[4]
 
 class H_LoopPerceive(Handler):
 
@@ -187,3 +179,26 @@ class H_Test(Handler):
     msg = '$$$$$$====== Hello test %i =====$$$$$$ '
     logger.debug(msg,Event.E_Test.idx)
     print msg %Event.E_Test.idx
+
+class H_Worker(Handler):
+
+  def handle(self):
+    msg = '@@@@@@====== Worker test ======@@@@@@ '
+    logger.debug(msg)
+    print msg
+#    i = random.randint(0,99)
+#    if i>5 and i <70:
+#      event = Event.E_Worker().Gen_Event()
+#      scheduler = whu_sched.scheduler(time.time,time.sleep)
+#      scheduler.enter(*event)
+#      msg = 'New E_Worker event entered!\n'
+#      logger.debug(msg)
+#      print msg
+#    time.sleep(3)
+    t = OfflineAntiVirusThread()
+    t.setDaemon(True)
+    t.start()
+    print 'An OffAVT started\n'
+    msg = '/********** Worker Handled ***********/\n'
+    logger.debug(msg)
+    print msg
