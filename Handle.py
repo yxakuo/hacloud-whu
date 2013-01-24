@@ -9,6 +9,14 @@ from OfflineAntiVirus import OfflineAntiVirusThread
 from Execution.error import Error
 #from Execution.Instance import F_Instance
 import sys
+import tempfile
+from offav import F_OffAV
+
+class VM_Profile:
+  def __init__(self,vmid='instance-00000000',userid='user-0000',hostid='host-0000'):
+    self.vmid = vmid
+    self.userid = userid
+    self.hostid = hostid
 
 class Handler(Error):
   pass
@@ -202,3 +210,50 @@ class H_Worker(Handler):
     msg = '/********** Worker Handled ***********/\n'
     logger.debug(msg)
     print msg
+
+class H_StartOffAV(Handler):
+
+  def handle(self,vm_profiles=[],av_args={'avSoft':'$DEFAULT_AVSOFT','doMethod':'$DEFAULT_DO_METHOD','scanDir':'$HOME'}):
+    msg = 'In StartOffAV handle\n'
+    print msg
+    if not len(vm_profiles):
+      print 'All virtual machines would start OffAV Tasks.\n'
+      all_vms = [VM_Profile('instance-00000001','user-0002','host-0003'),VM_Profile('instance-00000002','user-0002','host-0002'),VM_Profile('instance-00000003','user-0001','host-0001'),VM_Profile('instance-00000004','user-0003','host-0002')]
+      vm_profiles = all_vms
+
+    for vm in vm_profiles:
+      vmid = vm.vmid
+      userid = vm.userid
+      hostid = vm.hostid
+      if not True: #F_OffAV.IsImageMountable(vmid,userid,hostid):
+        #raise VMImageUnmountableError
+        print 'The image of  %s is unmountable!' %vmid
+        continue
+      print 'The image of %s is mountable. ' %vmid
+      #get image path
+      img_path = F_OffAV.Get_ImagePath(vmid,userid,hostid)
+      if img_path is None:
+        #raise VMImageMissingError
+        print 'Fail to get the image of %s %s %s!' %(vmid,userid,hostid)
+        continue
+      print 'The image path of %s is %s.' %(vmid,img_path)
+      #create tmp directory for mounting the image
+      dirname = F_OffAV.Get_TmpDir()
+      if dirname is None:
+        print 'Unable to create temp directory for image mounting!'
+        #raise MkdTempError
+        continue
+      #mount the vm image to tmp directory
+      r = F_OffAV.Mount_ImageToLocal(img_path,dirname)
+      #set up a worker thread to scan the mounted image
+      if r:
+        print 'VM image has been mounted to local temp dir.\n'
+        t = F_OffAV.OffAVTask(dirname,av_args)
+        t.setDaemon(True)
+        #TODO:append t to global daemon threads list for further control over them
+        t.start()
+      else:
+        print 'Fail to mount the VM image to local temp dir.\n'
+        #raise MountLocalError
+        continue
+#default arguments override by the passed-ins

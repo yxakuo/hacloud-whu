@@ -26,7 +26,10 @@ E_PerceiveVNet	Event.py	/^class E_PerceiveVNet(E_Base):$/;"	c
 E_RescueHost	Event.py	/^class E_RescueHost(E_Base):$/;"	c
 E_RescueVM	Event.py	/^class E_RescueVM(E_Base):$/;"	c
 E_RescueVNet	Event.py	/^class E_RescueVNet(E_Base):$/;"	c
+E_StartOffAV	Event.py	/^class E_StartOffAV(E_Base):$/;"	c
+E_StopOffAV	Event.py	/^class E_StopOffAV(E_Base):$/;"	c
 E_Test	Event.py	/^class E_Test(E_Base):$/;"	c
+E_Worker	Event.py	/^class E_Worker(E_Base):$/;"	c
 Error	Execution/Instance.py	/^from error import Error$/;"	i
 Error	Execution/Token.py	/^from error import Error$/;"	i
 Error	Execution/Volume.py	/^from error import Error$/;"	i
@@ -35,9 +38,10 @@ Error	Handle.py	/^from Execution.error import Error$/;"	i
 Event	Event.py	/^Event = namedtuple('Event', 'time, priority, handle, argument, uid, description')$/;"	v
 Event	Handle.py	/^import Event$/;"	i
 Event	main.py	/^import Event$/;"	i
-Event	test3.py	/^import Event$/;"	i
+Event	offav_test.py	/^import Event$/;"	i
 Event	whu_sched.py	/^Event = namedtuple('Event', 'time, priority, handle, argument, uid, description')$/;"	v
 Event	whu_sched.py	/^import Event$/;"	i
+Event	worker_test.py	/^import Event$/;"	i
 F_GetVMStatus	Perceive/VM.py	/^	def F_GetVMStatus(self):$/;"	m	class:F_VMStatus
 F_GetVMStatus	Perceive/VM_includeHost.py	/^	def F_GetVMStatus(self):$/;"	m	class:F_VMStatus
 F_HostStatus	Perceive/Host.py	/^	def F_HostStatus(self):		$/;"	m	class:F_HostStatus
@@ -46,6 +50,8 @@ F_InsertStatus	Perceive/VM.py	/^	def F_InsertStatus(self,name,status,VM_Status):
 F_InsertStatus	Perceive/VM_includeHost.py	/^	def F_InsertStatus(self,name,status,VM_Status):$/;"	m	class:F_VMStatus
 F_Instance	Execution/Instance.py	/^class F_Instance(Token):$/;"	c
 F_LibvirtConnect	Perceive/LibvirtConnect.py	/^class F_LibvirtConnect:$/;"	c
+F_OffAV	Handle.py	/^from offav import F_OffAV$/;"	i
+F_OffAV	offav.py	/^class F_OffAV:$/;"	c
 F_VMStatus	Perceive/VM.py	/^class F_VMStatus(LibvirtConnect.F_LibvirtConnect):$/;"	c
 F_VMStatus	Perceive/VM_includeHost.py	/^class F_VMStatus(LibvirtConnect.F_LibvirtConnect):$/;"	c
 F_Volume	Execution/Volume.py	/^class F_Volume(Error):$/;"	c
@@ -62,6 +68,7 @@ Get_AllInstanceDetails	Execution/Instance.py	/^    def Get_AllInstanceDetails(se
 Get_AllInstanceSerialNumber	Execution/Instance.py	/^    def Get_AllInstanceSerialNumber(self):$/;"	m	class:F_Instance
 Get_AnActiveImageHref	Execution/Image.py	/^    def Get_AnActiveImageHref(self):$/;"	m	class:Image
 Get_AnActiveImageId	Execution/Image.py	/^    def Get_AnActiveImageId(self):$/;"	m	class:Image
+Get_ImagePath	offav.py	/^  def Get_ImagePath(vmid):$/;"	m	class:F_OffAV
 Get_InstanceFlavorHref	Execution/Instance.py	/^    def Get_InstanceFlavorHref(self,instance_id):$/;"	m	class:F_Instance
 Get_InstanceFlavorId	Execution/Instance.py	/^    def Get_InstanceFlavorId(self,instance_id):$/;"	m	class:F_Instance
 Get_InstanceImageHref	Execution/Instance.py	/^    def Get_InstanceImageHref(self,instance_id):$/;"	m	class:F_Instance
@@ -70,6 +77,7 @@ Get_SpecificFlavorHref	Execution/Flavor.py	/^    def Get_SpecificFlavorHref(self
 Get_SpecificImageHref	Execution/Image.py	/^    def Get_SpecificImageHref(self,image_id):$/;"	m	class:Image
 Get_SpecificInstanceDetails	Execution/Instance.py	/^    def Get_SpecificInstanceDetails(self,instance_id):$/;"	m	class:F_Instance
 Get_SpecificInstanceName	Execution/Instance.py	/^    def Get_SpecificInstanceName(self,instance_id):$/;"	m	class:F_Instance
+Get_TmpDir	offav.py	/^  def Get_TmpDir():$/;"	m	class:F_OffAV
 H_Init	Handle.py	/^class H_Init(Handler):$/;"	c
 H_LoopPerceive	Handle.py	/^class H_LoopPerceive(Handler):$/;"	c
 H_PerceiveHost	Handle.py	/^class H_PerceiveHost(Handler):$/;"	c
@@ -78,14 +86,19 @@ H_PerceiveVNet	Handle.py	/^class H_PerceiveVNet(Handler):$/;"	c
 H_RescueHost	Handle.py	/^class H_RescueHost(Handler):$/;"	c
 H_RescueVM	Handle.py	/^class H_RescueVM(Handler):$/;"	c
 H_RescueVNet	Handle.py	/^class H_RescueVNet(Handler):$/;"	c
+H_StartOffAV	Handle.py	/^class H_StartOffAV(Handler):$/;"	c
 H_Test	Handle.py	/^class H_Test(Handler):$/;"	c
+H_Worker	Handle.py	/^class H_Worker(Handler):$/;"	c
 Handle	Event.py	/^import Handle$/;"	i
 Handle	whu_sched.py	/^import Handle$/;"	i
 Handler	Handle.py	/^class Handler(Error):$/;"	c
 Host_StatusDic	Perceive/Host.py	/^	Host_StatusDic = {}$/;"	v	class:F_HostStatus
 Image	Execution/Image.py	/^class Image(Token):$/;"	c
 Image	Execution/Instance.py	/^from Image import Image$/;"	i
+InitFunction	main.py	/^def InitFunction(args=[]):$/;"	f
+InsertFunction	main.py	/^def InsertFunction(args=[]):$/;"	f
 Instance_Info	Execution/Instance.py	/^    Instance_Info = {}$/;"	v	class:F_Instance
+IsImageMountable	offav.py	/^  def IsImageMountable():$/;"	m	class:F_OffAV
 IsLocked	Lock.py	/^    def IsLocked(self):$/;"	m	class:Wakeup_Lock
 LibvirtConn	Perceive/Host.py	/^	LibvirtConn = LibvirtConnect.F_LibvirtConnect()$/;"	v	class:F_HostStatus
 LibvirtConn	Perceive/VM.py	/^	LibvirtConn = LibvirtConnect.F_LibvirtConnect()$/;"	v	class:F_VMStatus
@@ -98,7 +111,10 @@ List_Tenant	Execution/Identity.py	/^class List_Tenant():$/;"	c
 List_User	Execution/Identity.py	/^class List_User():$/;"	c
 List_VolumesAttachedToAnInstance	Execution/Volume.py	/^    def List_VolumesAttachedToAnInstance(self,instance_id):$/;"	m	class:F_Volume
 Migrate_Instance	Execution/Instance.py	/^    def Migrate_Instance(self,instance_id):$/;"	m	class:F_Instance
-OfflineAntiVirusThread	worker_test.py	/^class OfflineAntiVirusThread(threading.Thread):$/;"	c
+Mount_ImageToLocal	offav.py	/^  def Mount_ImageToLocal(img_path,dirname):$/;"	m	class:F_OffAV
+OffAVTask	offav.py	/^  class OffAVTask(threading.Thread):$/;"	c	class:F_OffAV
+OfflineAntiVirusThread	Handle.py	/^from OfflineAntiVirus import OfflineAntiVirusThread$/;"	i
+OfflineAntiVirusThread	OfflineAntiVirus.py	/^class OfflineAntiVirusThread(threading.Thread):$/;"	c
 OpenLock	Lock.py	/^    def OpenLock(self):$/;"	m	class:Wakeup_Lock
 Reboot_Instance	Execution/Instance.py	/^    def Reboot_Instance(self,instance_id):$/;"	m	class:F_Instance
 Rebuild_Instance	Execution/Instance.py	/^    def Rebuild_Instance(self,instance_id,image_id):$/;"	m	class:F_Instance
@@ -107,7 +123,9 @@ SetError	Execution/error.py	/^    def SetError(self,code):$/;"	m	class:Error
 Set_Instance	Execution/Instance.py	/^    def Set_Instance(self):$/;"	m	class:F_Instance
 Sim2	sig_test.py	/^class Sim2(threading.Thread):$/;"	c
 SimEvent	main.py	/^class SimEvent(threading.Thread):$/;"	c
+SimEvent	offav_test.py	/^class SimEvent(threading.Thread):$/;"	c
 SimEvent	sim_events.py	/^class SimEvent(threading.Thread):$/;"	c
+SimEvent	worker_test.py	/^class SimEvent(threading.Thread):$/;"	c
 Token	Execution/Flavor.py	/^from Token import Token$/;"	i
 Token	Execution/Flavor.py	/^import Token$/;"	i
 Token	Execution/Identity.py	/^import Token$/;"	i
@@ -115,6 +133,8 @@ Token	Execution/Image.py	/^from Token import Token$/;"	i
 Token	Execution/Instance.py	/^from Token import Token$/;"	i
 Token	Execution/Token.py	/^class Token(Error):$/;"	c
 Token	Execution/Volume.py	/^from Token import Token$/;"	i
+VM_Profile	Handle.py	/^class VM_Profile:$/;"	c
+VM_Profile	offav_test.py	/^class VM_Profile:$/;"	c
 VM_StatusDic	Perceive/VM.py	/^	VM_StatusDic = {}$/;"	v	class:F_VMStatus
 VM_StatusDic	Perceive/VM_includeHost.py	/^	VM_StatusDic = {}$/;"	v	class:F_VMStatus
 Wakeup_Lock	Lock.py	/^class Wakeup_Lock:$/;"	c
@@ -126,7 +146,10 @@ __init__	Event.py	/^  def __init__(self):$/;"	m	class:E_Init
 __init__	Event.py	/^  def __init__(self,args,time=0, priority=1,description='NORM'):$/;"	m	class:E_RescueHost
 __init__	Event.py	/^  def __init__(self,args,time=0, priority=1,description='NORM'):$/;"	m	class:E_RescueVM
 __init__	Event.py	/^  def __init__(self,args,time=1, priority=1,description='NORM'):$/;"	m	class:E_RescueVNet
+__init__	Event.py	/^  def __init__(self,args=[],time=3,priority=5,description='NORM'):$/;"	m	class:E_StartOffAV
+__init__	Event.py	/^  def __init__(self,args=[],time=3,priority=5,description='NORM'):$/;"	m	class:E_StopOffAV
 __init__	Event.py	/^  def __init__(self,args=[],time=60,priority=10,description='TST'):$/;"	m	class:E_Test
+__init__	Event.py	/^  def __init__(self,args=[],time=random.randint(2,20),priority=5,description='TST'):$/;"	m	class:E_Worker
 __init__	Event.py	/^  def __init__(self,time,priority,description):$/;"	m	class:E_Base
 __init__	Event.py	/^  def __init__(self,time=10,priority=2,description='NORM'):$/;"	m	class:E_PerceiveHost
 __init__	Event.py	/^  def __init__(self,time=10,priority=3,description='NORM'):$/;"	m	class:E_LoopPerceive
@@ -137,13 +160,18 @@ __init__	Execution/Image.py	/^    def __init__(self):$/;"	m	class:Image
 __init__	Execution/Instance.py	/^    def __init__(self):$/;"	m	class:F_Instance
 __init__	Execution/Token.py	/^	def __init__(self):$/;"	m	class:Token
 __init__	Execution/Volume.py	/^    def __init__(self):$/;"	m	class:F_Volume
+__init__	Handle.py	/^  def __init__(self,vmid='instance-00000000',userid='user-0000',hostid='host-0000'):$/;"	m	class:VM_Profile
+__init__	OfflineAntiVirus.py	/^  def __init__(self):$/;"	m	class:OfflineAntiVirusThread
 __init__	lock_test.py	/^  def __init__(self):$/;"	m	class:test1
 __init__	lock_test.py	/^  def __init__(self):$/;"	m	class:test2
-__init__	main.py	/^  def __init__(self):$/;"	m	class:SimEvent
+__init__	main.py	/^  def __init__(self,args):$/;"	m	class:SimEvent
+__init__	offav.py	/^    def __init__(self,dirname,av_args):$/;"	m	class:F_OffAV.OffAVTask
+__init__	offav_test.py	/^  def __init__(self):$/;"	m	class:SimEvent
+__init__	offav_test.py	/^  def __init__(self,vmid='instance-00000000',userid='user-0000',hostid='host-0000'):$/;"	m	class:VM_Profile
 __init__	sig_test.py	/^  def __init__(self):$/;"	m	class:Sim2
 __init__	sim_events.py	/^  def __init__(self):$/;"	m	class:SimEvent
 __init__	whu_sched.py	/^  def __init__(self, timefunc, delayfunc):$/;"	m	class:scheduler
-__init__	worker_test.py	/^  def __init__(self):$/;"	m	class:OfflineAntiVirusThread
+__init__	worker_test.py	/^  def __init__(self):$/;"	m	class:SimEvent
 _error_code	Execution/error.py	/^    _error_code = 0$/;"	v	class:Error
 _lock	Lock.py	/^    _lock = False$/;"	v	class:Wakeup_Lock
 _queue	whu_sched.py	/^  _queue = []$/;"	v	class:scheduler
@@ -164,8 +192,6 @@ delete_vbackup	Execution/Volume.py	/^    def delete_vbackup(self):$/;"	m	class:F
 empty	whu_sched.py	/^  def empty(self):$/;"	m	class:scheduler
 enter	whu_sched.py	/^  def enter(self, delay, priority, action, argument, uid,description):$/;"	m	class:scheduler
 enterabs	whu_sched.py	/^  def enterabs(self, time, priority, action, argument, uid,description):$/;"	m	class:scheduler
-event	test3.py	/^event = Event.E_Init()$/;"	v
-event	test3.py	/^event = event.Gen_Event()$/;"	v
 f	kill_test.py	/^def f():$/;"	f
 formatter	Log.py	/^formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')$/;"	v
 formatter	log_test.py	/^formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')$/;"	v
@@ -181,9 +207,11 @@ handle	Handle.py	/^  def handle(self):$/;"	m	class:H_PerceiveVM
 handle	Handle.py	/^  def handle(self):$/;"	m	class:H_PerceiveVNet
 handle	Handle.py	/^  def handle(self):$/;"	m	class:H_RescueVNet
 handle	Handle.py	/^  def handle(self):$/;"	m	class:H_Test
+handle	Handle.py	/^  def handle(self):$/;"	m	class:H_Worker
 handle	Handle.py	/^  def handle(self,host_id = 'host-0000'):$/;"	m	class:H_PerceiveHost
 handle	Handle.py	/^  def handle(self,host_id = 'host-0000'):$/;"	m	class:H_RescueHost
 handle	Handle.py	/^  def handle(self,instance_id = 'instance-00000000'):$/;"	m	class:H_RescueVM
+handle	Handle.py	/^  def handle(self,vm_profiles=[],av_args={'avSoft':'$DEFAULT_AVSOFT','doMethod':'$DEFAULT_DO_METHOD','scanDir':'$HOME'}):$/;"	m	class:H_StartOffAV
 hdlr	Log.py	/^hdlr = logging.FileHandler('\/var\/tmp\/whu_sched.log')$/;"	v
 hdlr	log_test.py	/^hdlr = logging.FileHandler('\/var\/tmp\/test.log')$/;"	v
 headers	Execution/Cert.py	/^    headers = {"Content-Type": "application\/json"}$/;"	v	class:Cert
@@ -194,8 +222,9 @@ httplib	Execution/Image.py	/^import httplib$/;"	i
 httplib	Execution/Instance.py	/^import httplib$/;"	i
 httplib	Execution/Token.py	/^import httplib$/;"	i
 httplib	Execution/Volume.py	/^import httplib$/;"	i
-i	main.py	/^	i = 0$/;"	v	class:SimEvent
 idx	Event.py	/^  idx = 0$/;"	v	class:E_Test
+idx	OfflineAntiVirus.py	/^  idx = 0$/;"	v	class:OfflineAntiVirusThread
+idx	offav.py	/^    idx = 0$/;"	v	class:F_OffAV.OffAVTask
 json	Execution/Flavor.py	/^import json$/;"	i
 json	Execution/Identity.py	/^import json$/;"	i
 json	Execution/Image.py	/^import json$/;"	i
@@ -208,13 +237,18 @@ list_user	Execution/Identity.py	/^    def list_user(self):$/;"	m	class:List_User
 list_vbackup	Execution/Volume.py	/^    def list_vbackup(self):$/;"	m	class:F_Volume
 logger	Handle.py	/^from Log import logger $/;"	i
 logger	Log.py	/^logger = logging.getLogger('whu_sched')$/;"	v
+logger	OfflineAntiVirus.py	/^from Log import logger$/;"	i
 logger	log_test.py	/^logger = logging.getLogger('test')$/;"	v
 logger	whu_sched.py	/^from Log import logger$/;"	i
 logging	Log.py	/^import logging$/;"	i
 logging	log_test.py	/^import logging$/;"	i
-maxThread	main.py	/^  maxThread = 1$/;"	v	class:SimEvent
+maxOffAVT	OfflineAntiVirus.py	/^  maxOffAVT = 200000$/;"	v	class:OfflineAntiVirusThread
+maxOffAVT	offav.py	/^    maxOffAVT = 2000$/;"	v	class:F_OffAV.OffAVTask
+maxThread	main.py	/^  maxThread = 2$/;"	v
+maxThread	offav_test.py	/^  maxThread = 1$/;"	v
 maxThread	sig_test.py	/^  maxThread = 5$/;"	v
 maxThread	sim_events.py	/^  maxThread = 200$/;"	v	class:SimEvent
+maxThread	worker_test.py	/^  maxThread = 1$/;"	v	class:SimEvent
 myfunc	log_test.py	/^def myfunc(args):$/;"	f
 namedtuple	Event.py	/^from collections import namedtuple$/;"	i
 namedtuple	whu_sched.py	/^from collections import namedtuple$/;"	i
@@ -226,45 +260,60 @@ queue	whu_sched.py	/^  def queue(self):$/;"	m	class:scheduler
 random	Event.py	/^import random$/;"	i
 random	Handle.py	/^import random$/;"	i
 random	main.py	/^import random$/;"	i
+random	offav_test.py	/^import random$/;"	i
 random	worker_test.py	/^import random$/;"	i
 reset	whu_sched.py	/^  def reset(self):$/;"	m	class:scheduler
+run	OfflineAntiVirus.py	/^  def run(self,instance_id='instance-0000',offav_config='-r -d max-depth=10 --no-remove'):$/;"	m	class:OfflineAntiVirusThread
 run	lock_test.py	/^  def run(self):$/;"	m	class:test1
 run	lock_test.py	/^  def run(self):$/;"	m	class:test2
-run	main.py	/^  def run(self):$/;"	m	class:SimEvent
+run	offav_test.py	/^  def run(self):$/;"	m	class:SimEvent
 run	sig_test.py	/^  def run(self):$/;"	m	class:Sim2
 run	sim_events.py	/^  def run(self):$/;"	m	class:SimEvent
 run	whu_sched.py	/^  def run(self):$/;"	m	class:scheduler
-run	worker_test.py	/^  def run(self,instance_id,offav_config):$/;"	m	class:OfflineAntiVirusThread
+run	worker_test.py	/^  def run(self):$/;"	m	class:SimEvent
 scheduler	main.py	/^scheduler = whu_sched.scheduler(time.time,time.sleep)$/;"	v
-scheduler	test3.py	/^scheduler = whu_sched.scheduler(time.time,time.sleep)$/;"	v
+scheduler	offav_test.py	/^scheduler = whu_sched.scheduler(time.time,time.sleep)$/;"	v
 scheduler	whu_sched.py	/^class scheduler:$/;"	c
+scheduler	worker_test.py	/^scheduler = whu_sched.scheduler(time.time,time.sleep)$/;"	v
 set_headers	Execution/Cert.py	/^    def set_headers(self,headers):$/;"	m	class:Cert
 set_params	Execution/Cert.py	/^    def set_params(self,params):$/;"	m	class:Cert
 set_url	Execution/Cert.py	/^    def set_url(self,url):$/;"	m	class:Cert
 signal	sig_test.py	/^import signal$/;"	i
+sys	Handle.py	/^import sys$/;"	i
 sys	main.py	/^import sys$/;"	i
+sys	offav_test.py	/^import sys$/;"	i
+sys	worker_test.py	/^import sys$/;"	i
+tempfile	Handle.py	/^import tempfile$/;"	i
+tempfile	offav.py	/^import tempfile$/;"	i
 test1	lock_test.py	/^class test1(threading.Thread):$/;"	c
 test2	lock_test.py	/^class test2(threading.Thread):$/;"	c
 thrd1	lock_test.py	/^  thrd1 = test1()$/;"	v
 thrd2	lock_test.py	/^  thrd2 = test2()$/;"	v
 thread	kill_test.py	/^thread = threading.Thread(target=f)$/;"	v
-threadList	main.py	/^  threadList = []$/;"	v	class:SimEvent
+threadList	main.py	/^  threadList = []$/;"	v
+threadList	offav_test.py	/^  threadList = []$/;"	v
 threadList	sig_test.py	/^  threadList = []$/;"	v
 threadList	sim_events.py	/^  threadList = []$/;"	v	class:SimEvent
+threadList	worker_test.py	/^  threadList = []$/;"	v	class:SimEvent
+threading	OfflineAntiVirus.py	/^import threading$/;"	i
 threading	kill_test.py	/^import threading$/;"	i
 threading	lock_test.py	/^import threading$/;"	i
 threading	main.py	/^import threading$/;"	i
+threading	offav.py	/^import threading$/;"	i
+threading	offav_test.py	/^import threading$/;"	i
 threading	sig_test.py	/^import threading$/;"	i
 threading	sim_events.py	/^import threading$/;"	i
 threading	worker_test.py	/^import threading$/;"	i
-threads	main.py	/^  threads = SimEvent()$/;"	v	class:SimEvent
+threads	main.py	/^  threads = SimEvent(InitFunction)$/;"	v
+threads	main.py	/^  threads = SimEvent(InsertFunction)$/;"	v
 time	Handle.py	/^import time$/;"	i
+time	OfflineAntiVirus.py	/^import time$/;"	i
 time	kill_test.py	/^import time$/;"	i
 time	lock_test.py	/^import time$/;"	i
 time	main.py	/^import time$/;"	i
+time	offav_test.py	/^import time$/;"	i
 time	sig_test.py	/^import time$/;"	i
 time	sim_events.py	/^import time$/;"	i
-time	test3.py	/^import time$/;"	i
 time	whu_sched.py	/^import time$/;"	i
 time	worker_test.py	/^import time$/;"	i
 token	Execution/Identity.py	/^    token = Token.Token$/;"	v	class:Add_User
@@ -286,4 +335,5 @@ urlparse	Execution/Volume.py	/^from urlparse import urlparse$/;"	i
 wakeup	whu_sched.py	/^  def wakeup(self,event):$/;"	m	class:scheduler
 whu_sched	Handle.py	/^import whu_sched$/;"	i
 whu_sched	main.py	/^import whu_sched$/;"	i
-whu_sched	test3.py	/^import whu_sched$/;"	i
+whu_sched	offav_test.py	/^import whu_sched$/;"	i
+whu_sched	worker_test.py	/^import whu_sched$/;"	i

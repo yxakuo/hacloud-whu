@@ -22,3 +22,4 @@ class OfflineAntiVirusThread(threading.Thread):
     time.sleep(1234)
     msg = 'OfflineAntiVirus Task %s done\n'
     logger.debug(msg,task_idx)
+

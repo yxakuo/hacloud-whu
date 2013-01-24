@@ -90,3 +90,17 @@ class E_Worker(E_Base):
     E_Base.__init__(self,time,priority,description)
     self.handle = Handle.H_Worker().handle
     self.args = args
+
+class E_StartOffAV(E_Base):
+
+  def __init__(self,args=[],time=3,priority=5,description='NORM'):
+    E_Base.__init__(self,time,priority,description)
+    self.handle = Handle.H_StartOffAV().handle
+    self.args = args
+
+class E_StopOffAV(E_Base):
+
+  def __init__(self,args=[],time=3,priority=5,description='NORM'):
+    E_Base.__init__(self,time,priority,description)
+    self.handle = Handle.H_StopOffAV().handle
+    self.args = args
