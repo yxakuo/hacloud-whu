@@ -221,6 +221,8 @@ class H_StartOffAV(Handler):
       all_vms = [VM_Profile('instance-00000001','user-0002','host-0003'),VM_Profile('instance-00000002','user-0002','host-0002'),VM_Profile('instance-00000003','user-0001','host-0001'),VM_Profile('instance-00000004','user-0003','host-0002')]
       vm_profiles = all_vms
 
+    f_offav = F_OffAV()
+
     for vm in vm_profiles:
       vmid = vm.vmid
       userid = vm.userid
@@ -231,24 +233,24 @@ class H_StartOffAV(Handler):
         continue
       print 'The image of %s is mountable. ' %vmid
       #get image path
-      img_path = F_OffAV.Get_ImagePath(vmid,userid,hostid)
+      img_path = f_offav.Get_ImagePath(vmid)
       if img_path is None:
         #raise VMImageMissingError
         print 'Fail to get the image of %s %s %s!' %(vmid,userid,hostid)
         continue
       print 'The image path of %s is %s.' %(vmid,img_path)
       #create tmp directory for mounting the image
-      dirname = F_OffAV.Get_TmpDir()
+      dirname = f_offav.Get_TmpDir()
       if dirname is None:
         print 'Unable to create temp directory for image mounting!'
         #raise MkdTempError
         continue
       #mount the vm image to tmp directory
-      r = F_OffAV.Mount_ImageToLocal(img_path,dirname)
+      r = f_offav.Mount_ImageToLocal(img_path,dirname)
       #set up a worker thread to scan the mounted image
       if r:
         print 'VM image has been mounted to local temp dir.\n'
-        t = F_OffAV.OffAVTask(dirname,av_args)
+        t = f_offav.OffAVTask(dirname,av_args)
         t.setDaemon(True)
         #TODO:append t to global daemon threads list for further control over them
         t.start()
