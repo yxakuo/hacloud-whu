@@ -74,7 +74,7 @@ if __name__=="__main__":
         print 'Add an offav event with different args to queue\n'
 
         vm_profile = VM_Profile('instance-00000001','user-0002','host-0003')
-        event = Event.E_StartOffAV([[vm_profile,],{'avSoft':'ClamAV','doMethod':'--no-remove','scanDir':'/home'}]).Gen_Event()
+        event = Event.E_StartOffAV([[vm_profile,],{'avSoft':'ClamAV','doMethod':'--remove=no','scanStyle':'--recursive','scanDir':'/home'}]).Gen_Event()
         scheduler.enter(*event)
 
       elif cmd[0] == 'q' or cmd[0] == 'quit':
