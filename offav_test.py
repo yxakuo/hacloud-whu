@@ -77,6 +77,12 @@ if __name__=="__main__":
         event = Event.E_StartOffAV([[vm_profile,],{'avSoft':'ClamAV','doMethod':'--remove=no','scanStyle':'--recursive','scanDir':'/home'}]).Gen_Event()
         scheduler.enter(*event)
 
+      elif cmd[0] == 'soav':
+        print 'Add a stop offav event\n'
+        vm_profile = VM_Profile('instance-00000001','user-0002','host-0003')
+        event = Event.E_StopOffAV([[vm_profile,]]).Gen_Event()
+        scheduler.enter(*event)
+
       elif cmd[0] == 'q' or cmd[0] == 'quit':
         print 'Quiting......\n'
         scheduler.reset()

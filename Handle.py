@@ -11,7 +11,7 @@ from Execution.error import Error
 import sys
 import tempfile
 from offav import F_OffAV
-
+from offav import worker_threads
 class VM_Profile:
   def __init__(self,vmid='instance-00000000',userid='user-0000',hostid='host-0000'):
     self.vmid = vmid
@@ -227,5 +227,26 @@ class H_StartOffAV(Handler):
       t = f_offav.OffAVTask(vm,av_args)
       t.setDaemon(True)
       #TODO:append t to global daemon threads list for further control over them
+      global worker_threads
+      worker_threads[vm.vmid]=t
       t.start()
 #default arguments override by the passed-ins
+
+class H_StopOffAV(Handler):
+
+  def handle(self,vm_profiles=[]):
+    msg = 'In StartOffAV handle\n'
+    print msg
+    if not len(vm_profiles):
+      print 'All virtual machines would start OffAV Tasks.\n'
+      all_vms = [VM_Profile('instance-00000001','user-0002','host-0003'),VM_Profile('instance-00000002','user-0002','host-0002'),VM_Profile('instance-00000003','user-0001','host-0001'),VM_Profile('instance-00000004','user-0003','host-0002')]
+      vm_profiles = all_vms
+
+    f_offav = F_OffAV()
+
+    for vm in vm_profiles:
+      t = f_offav.StopOffAVTask(vm)
+      if t:
+        print 'Successfully stop OffAVTask of %s'%vm.vmid
+      else:
+        print 'Fail to stop OffAVTask of %s'%vm.vmid

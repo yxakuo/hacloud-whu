@@ -3,7 +3,7 @@ import tempfile
 import guestfs
 import time
 import os
-
+worker_threads={}
 class F_OffAV:
 
   def IsImageMountable(self):
@@ -41,6 +41,7 @@ class F_OffAV:
     dirname = self.Get_TmpDir()
     domethod = av_args['doMethod']
     scandir = av_args['scanDir']
+    scanstyle = '--recursive'
 
     g = guestfs.GuestFS()
     g.add_drive_opts(img_path,format="raw")
@@ -67,7 +68,7 @@ class F_OffAV:
         #time.sleep(8)
         av_bin = 'clamscan'
         log_path = '/tmp/oav-%s.log' %vm.vmid
-        execommand = ' '.join([av_bin,domethod,dirname,'-l',log_path])
+        execommand = ' '.join([av_bin,domethod,scanstyle,dirname,'-l',log_path])
         os.system(execommand)
         print 'Execute %s \n' %execommand
         print 'Finish scanning partition %s .......\n' %p
@@ -89,6 +90,14 @@ class F_OffAV:
   def DefaultAVFunc(domethod,targetdir):
     print 'Running in Default thread with options %s scanning %s\n' %(domethod,targetdir)
     pass
+
+  def StopOffAVTask(self,vm):
+    print 'Trying to stop offavtask thread %s' %vm.vmid
+    global worker_threads
+    worker_threads[vm.vmid]._Thread__stop()
+    worker_threads.__delitem__(vm.vmid)
+    #TODO: should have used 'kill' to terminate the offav task,for it runs as a subprocess and would keep running even when the worker_thread is stopped.
+    #Condider one more thing:In the OffAVTask,there would be a 'fork' for each partition of the target vm.So when the task for one partition is killed,some more task might be forked,despite the intend to stop all offav tasks of the target vm.A signal before the 'fork' might be of help.
 
   class OffAVTask(threading.Thread):
 
